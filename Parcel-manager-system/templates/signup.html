@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <!-- Include theme CSS -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel='stylesheet' type='text/css' />
+    <link href="{{ url_for('static', filename='css/style-responsive.css') }}" rel="stylesheet"/>
+    <link href="{{ url_for('static', filename='css/font.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ url_for('static', filename='css/font-awesome.css') }}" rel="stylesheet">
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="reg-w3">
+            <div class="w3layouts-main">
+                <h2>Register Now</h2>
+                <form method="POST" action="{{ url_for('signup') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.username.label(class="form-control-label") }}
+                        {{ form.username(class="form-control form-control-lg") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.email.label(class="form-control-label") }}
+                        {{ form.email(class="form-control form-control-lg") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.password.label(class="form-control-label") }}
+                        {{ form.password(class="form-control form-control-lg") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.confirm_password.label(class="form-control-label") }}
+                        {{ form.confirm_password(class="form-control form-control-lg") }}
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" name="terms" required> I agree to the Terms of Service and Privacy Policy
+                    </div>
+                    <div class="form-group">
+                        {{ form.submit(class="btn btn-primary btn-lg btn-block") }}
+                    </div>
+                </form>
+                <p>Already Registered? <a href="{{ url_for('login') }}">Login</a></p>
+            </div>
+        </div>
+    </div>
+    <!-- Include theme JS -->
+    <script src="{{ url_for('static', filename='js/jquery2.0.3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.dcjqaccordion.2.7.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.slimscroll.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.nicescroll.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.scrollTo.js') }}"></script>
+</body>
+</html>

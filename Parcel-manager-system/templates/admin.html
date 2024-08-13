@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome (for hamburger icon) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- jQuery UI CSS for datepicker -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-responsive.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .container {
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        th.sortable {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<section id="container">
+    <!-- Header Start -->
+    <header class="header fixed-top clearfix">
+        <div class="brand">
+            <a href="index.html" class="logo">Logged In</a>
+            <div class="sidebar-toggle-box">
+                <div class="fa fa-bars"></div>
+            </div>
+        </div>
+    </header>
+    <!-- Sidebar Start -->
+    <aside>
+        <div id="sidebar" class="nav-collapse">
+            <div class="leftside-navigation">
+                <ul class="sidebar-menu" id="nav-accordion">
+                    <li>
+                        <a class="active" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fa fa-cloud"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('logout') }}">
+                            <i class="fa fa-user"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <!-- Main Content Start -->
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="container mt-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h1>Parcel List</h1>
+                    
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#addParcelModal">
+                            Add Parcel
+                        </button>
+                        <button class="btn btn-primary" id="sortByName">
+                            Sort by Name
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Add Parcel Modal -->
+                <div id="addParcelModal" class="modal fade" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add New Parcel</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="addParcelForm" method="post" action="{{ url_for('admin_dashboard') }}">
+                                    {{ form.hidden_tag() }}
+                                    <div class="form-group">
+                                        {{ form.parcel_name.label }}
+                                        {{ form.parcel_name(class='form-control') }}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form.sender.label }}
+                                        {{ form.sender(class='form-control') }}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form.recipient.label }}
+                                        {{ form.recipient(class='form-control') }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="status">Status</label>
+                                        <select class="form-control" id="status" name="status" required>
+                                            <option value="" disabled selected>Select Status</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="In Transit">In Transit</option>
+                                            <option value="Delivered">Delivered</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="estimated_date">Estimated Date</label>
+                                        <input type="text" class="form-control datepicker" id="estimated_date" name="estimated_date" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="location">Location</label>
+                                        <input type="text" class="form-control" id="location" name="location" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" class="btn btn-primary" value="Add Parcel">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Parcel List -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-sort="parcel_name">Parcel Name</th>
+                            <th>Sender</th>
+                            <th>Recipient</th>
+                            <th>Status</th>
+                            <th>Estimated Date</th>
+                            <th>Location</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for parcel in parcels %}
+                        <tr>
+                            <td>{{ parcel.parcel_name }}</td>
+                            <td>{{ parcel.sender }}</td>
+                            <td>{{ parcel.recipient }}</td>
+                            <td>{{ parcel.status }}</td>
+                            <td>{{ parcel.estimated_date }}</td>
+                            <td>{{ parcel.location }}</td>
+                            <td>
+                                <button type="button" class="btn btn-warning update-btn" data-id="{{ parcel.id }}">Update</button>
+                                <button type="button" class="btn btn-danger delete-btn" data-id="{{ parcel.id }}">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <!-- Update Parcel Modal -->
+                <div id="updateParcelModal" class="modal fade" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Update Parcel</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="updateParcelForm" method="post" action="{{ url_for('update_parcel') }}">
+                                    {{ update_form.hidden_tag() }}
+                                    <input type="hidden" name="parcel_id" id="parcel_id">
+                                    <div class="form-group">
+                                        <label for="update_status">Status</label>
+                                        <select class="form-control" id="update_status" name="status" required>
+                                            <option value="" disabled selected>Select Status</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="In Transit">In Transit</option>
+                                            <option value="Delivered">Delivered</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="update_estimated_date">Estimated Date</label>
+                                        <input type="text" class="form-control update-datepicker" id="update_estimated_date" name="estimated_date" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="update_location">Location</label>
+                                        <input type="text" class="form-control" id="update_location" name="location" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" class="btn btn-primary" value="Update Parcel">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+</section>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery UI JS for datepicker -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<!-- Custom Scripts -->
+<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        $(".datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
+        $(".update-datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
+
+        // Fetch parcel details for update
+        $(".update-btn").click(function() {
+            var parcelId = $(this).data("id");
+            $.ajax({
+                url: "{{ url_for('get_parcel_details') }}",
+                method: "GET",
+                data: { parcel_id: parcelId },
+                success: function(response) {
+                    
+                    $("#updateParcelModal #parcel_id").val(response.id);
+                    $("#updateParcelModal #update_status").val(response.status);
+                    $("#updateParcelModal #update_estimated_date").val(response.estimated_date);
+                    $("#updateParcelModal #update_location").val(response.location);
+                    
+                    // Show the modal
+                    $("#updateParcelModal").modal("show");
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching parcel details:", error);
+                }
+            });
+        });
+    });
+
+    $('.delete-btn').on('click', function() {
+        const parcelId = $(this).data('id');
+        if (confirm('Are you sure you want to delete this parcel?')) {
+            $.ajax({
+                url: "{{ url_for('delete_parcel') }}",
+                type: 'POST',
+                data: { parcel_id: parcelId },
+                success: function(response) {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while deleting the parcel.');
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+    "name": "codespace/parcel-manager-system",
+    "autoload": {
+        "psr-4": {
+            "Codespace\\ParcelManagerSystem\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sneha Singhal",
+            "email": "119967246+snehaa3112@users.noreply.github.com"
+        }
+    ],
+    "require": {}
+}

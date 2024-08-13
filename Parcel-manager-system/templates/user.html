@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .dashboard-header {
+            margin-top: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #343a40;
+        }
+        .btn-logout {
+            float: right;
+            margin-top: 30px;
+        }
+        .parcel-list {
+            margin-top: 20px;
+        }
+        .parcel-item {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s ease;
+        }
+        .parcel-item:hover {
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        .parcel-item h5 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            color: #007bff;
+        }
+        .parcel-item p {
+            margin: 5px 0;
+            font-size: 1rem;
+        }
+        .status-label {
+            font-weight: bold;
+            color: #495057;
+        }
+        .row-cols-md-3 .col-md-4 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('logout') }}" class="btn btn-danger btn-logout">Logout</a>
+        <h2 class="dashboard-header">Your Parcel Dashboard</h2>
+
+        <div class="parcel-list">
+            <h4>Your Parcels</h4>
+            <div class="row row-cols-md-3">
+                {% for parcel in parcels %}
+                    <div class="col-md-4">
+                        <div class="parcel-item">
+                            <h5>Parcel ID: {{ parcel.id }}</h5>
+                            <p><span class="status-label">Parcel Name:</span> {{ parcel.parcel_name }}</p>
+                            <p><span class="status-label">Sender:</span> {{ parcel.sender }}</p>
+                            <p><span class="status-label">Recipient:</span> {{ parcel.recipient }}</p>
+                            <p><span class="status-label">Status:</span> {{ parcel.status }}</p>
+                            <p><span class="status-label">Location:</span> {{ parcel.location }}</p>
+                            <p><span class="status-label">Estimated Delivery Date:</span> {{ parcel.estimated_date }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var socket = io.connect('http://' + document.domain + ':' + location.port + '/user');
+            socket.on('parcel_update', function(data) {
+                var updated = false;
+                $('.parcel-item').each(function() {
+                    if ($(this).find('h5').text().indexOf('Parcel ID: ' + data.id) > -1) {
+                        updated = true;
+                        $(this).html('<h5>Parcel ID: ' + data.id + '</h5>' +
+                                     '<p><span class="status-label">Sender:</span> ' + data.sender + '</p>' +
+                                     '<p><span class="status-label">Recipient:</span> ' + data.recipient + '</p>' +
+                                     '<p><span class="status-label">Status:</span> ' + data.status + '</p>' +
+                                     '<p><span class="status-label">Location:</span> ' + data.location + '</p>' +
+                                     '<p><span class="status-label">Estimated Delivery Date:</span> ' + data.estimated_date + '</p>');
+                    }
+                });
+                if (!updated) {
+                    $('.row').append('<div class="col-md-4">' +
+                                     '<div class="parcel-item">' +
+                                     '<h5>Parcel ID: ' + data.id + '</h5>' +
+                                     '<p><span class="status-label">Sender:</span> ' + data.sender + '</p>' +
+                                     '<p><span class="status-label">Recipient:</span> ' + data.recipient + '</p>' +
+                                     '<p><span class="status-label">Status:</span> ' + data.status + '</p>' +
+                                     '<p><span class="status-label">Location:</span> ' + data.location + '</p>' +
+                                     '<p><span class="status-label">Estimated Delivery Date:</span> ' + data.estimated_date + '</p>' +
+                                     '</div>' +
+                                     '</div>');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

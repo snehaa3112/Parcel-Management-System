@@ -1,0 +1,6 @@
+Flask
+Flask-SocketIO
+Flask-Bcrypt
+SQLAlchemy
+Pandas
+mysqlclient
