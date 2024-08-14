@@ -72,6 +72,15 @@ def handle_user_update(data):
 def home():
     return redirect(url_for('login'))
 
+@app.route('/show_parcels')
+@login_required
+def show_parcels():
+    # Query all parcels from the database
+    parcels = Parcel.query.all()
+    # Render a template to display the parcels
+    return render_template('show_parcels.html', parcels=parcels)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -139,19 +148,23 @@ def admin_dashboard():
 @login_required
 def get_parcel_details():
     parcel_id = request.args.get('parcel_id')
-    parcel = Parcel.query.get(parcel_id)
-    if parcel:
-        return jsonify({
-            'id': parcel.id,
-            'parcel_name': parcel.parcel_name,
-            'sender': parcel.sender,
-            'recipient': parcel.recipient,
-            'status': parcel.status,
-            'estimated_date': parcel.estimated_date,
-            'location': parcel.location
-        })
+    if parcel_id and parcel_id.isdigit():
+        parcel_id = int(parcel_id)
+        parcel = Parcel.query.get(parcel_id)
+        if parcel:
+            return jsonify({
+                'id': parcel.id,
+                'parcel_name': parcel.parcel_name,
+                'sender': parcel.sender,
+                'recipient': parcel.recipient,
+                'status': parcel.status,
+                'estimated_date': parcel.estimated_date,
+                'location': parcel.location
+            })
+        else:
+            return jsonify({'error': 'Parcel not found'}), 404
     else:
-        return jsonify({'error': 'Parcel not found'}), 404
+        return jsonify({'error': 'Invalid parcel ID'}), 400
 @app.route('/update_parcel', methods=['POST'])
 @login_required
 def update_parcel():

@@ -1,0 +1,70 @@
+<!-- templates/show_parcels.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parcel List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* static/styles.css */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Parcel List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Parcel Name</th>
+                <th>Sender</th>
+                <th>Recipient</th>
+                <th>Status</th>
+                <th>Estimated Date</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for parcel in parcels %}
+            <tr>
+                <td>{{ parcel.id }}</td>
+                <td>{{ parcel.parcel_name }}</td>
+                <td>{{ parcel.sender }}</td>
+                <td>{{ parcel.recipient }}</td>
+                <td>{{ parcel.status }}</td>
+                <td>{{ parcel.estimated_date }}</td>
+                <td>{{ parcel.location }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>

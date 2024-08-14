@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `parcel` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `sender` varchar(150) NOT NULL,
   `recipient` varchar(150) NOT NULL,
   `status` varchar(100) NOT NULL,
@@ -37,6 +37,7 @@ CREATE TABLE `parcel` (
   `estimated_date` varchar(100) DEFAULT NULL,
   `parcel_name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 --
 -- Dumping data for table `parcel`
