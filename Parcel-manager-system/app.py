@@ -7,6 +7,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, curren
 from forms import LoginForm, RegistrationForm, ParcelForm, UpdateParcelForm
 from threading import Thread
 import time
+import logging
 
 # Configuration
 class Config:
@@ -111,9 +112,7 @@ def signup():
 @app.route('/admin_dashboard', methods=['GET', 'POST'])
 @login_required
 def admin_dashboard():
-    if current_user.is_admin != 1:
-        return redirect(url_for('user_dashboard'))
-    
+
     parcels = Parcel.query.all()
     form = ParcelForm()
     update_form = UpdateParcelForm()  
@@ -130,18 +129,18 @@ def admin_dashboard():
         db.session.add(parcel)
         db.session.commit()
         socketio.emit('parcel_update', {
-            'parcel_name':parcel.parcel_name,
+            'parcel_name': parcel.parcel_name,
             'sender': parcel.sender,
             'recipient': parcel.recipient,
             'status': parcel.status,
             'estimated_date': parcel.estimated_date,
             'location': parcel.location,
-            # 'created_at': parcel.created_at  # Optional: Include in real-time updates if needed
         }, namespace='/admin')
         flash('Parcel added successfully', 'success')
         return redirect(url_for('admin_dashboard'))
 
     return render_template('admin.html', form=form, parcels=parcels, update_form=update_form)
+
 
 
 @app.route('/get_parcel_details', methods=['GET'])
@@ -165,6 +164,8 @@ def get_parcel_details():
             return jsonify({'error': 'Parcel not found'}), 404
     else:
         return jsonify({'error': 'Invalid parcel ID'}), 400
+
+     
 @app.route('/update_parcel', methods=['POST'])
 @login_required
 def update_parcel():
@@ -189,7 +190,8 @@ def update_parcel():
 @login_required
 def user_dashboard():
     parcels = Parcel.query.all()
-    return render_template('user.html', parcels=parcels)
+    update_form = UpdateParcelForm()  # Create an instance of the form
+    return render_template('user.html', parcels=parcels, update_form=update_form)
 
 @app.route('/add_parcel', methods=['POST'])
 @login_required
@@ -213,6 +215,7 @@ def add_parcel():
 @app.route('/delete_parcel', methods=['POST'])
 @login_required
 def delete_parcel():
+    print("request recived")
     parcel_id = request.form.get('parcel_id')
     if current_user.is_admin != 1:
         return redirect(url_for('user_dashboard'))
@@ -227,6 +230,7 @@ def delete_parcel():
         db.session.rollback()
         print(f"Error: {e}")
         return jsonify({'success': False}), 500
+
 
 @app.route('/logout')
 @login_required

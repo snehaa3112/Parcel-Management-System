@@ -1,6 +1,16 @@
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, PasswordField, SubmitField,DateField, SelectField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
+from flask_wtf import FlaskForm
+from wtforms import SelectField, DateField, StringField, HiddenField, SubmitField
+from wtforms.validators import DataRequired
+
+# class UpdateParcelForm(FlaskForm):
+#     status = SelectField('Status', choices=[('Pending', 'Pending'), ('In Transit', 'In Transit'), ('Delivered', 'Delivered')], validators=[DataRequired()])
+#     estimated_date = DateField('Estimated Date', format='%Y-%m-%d', validators=[DataRequired()])
+#     location = StringField('Location', validators=[DataRequired()])
+#     parcel_id = HiddenField('Parcel ID')
+#     submit = SubmitField('Update Parcel')
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])

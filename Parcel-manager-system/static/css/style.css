@@ -202,9 +202,14 @@ ul.sidebar-menu li a.active i {
     transition:all .3s ease-in-out;
 }
 .footer {
+    width: 100%;
+    position: absolute;
     background: #d19a98;
     padding: 20px;
+    bottom: 0;
+    z-index: -1;
 }
+
 .footer p {
     color: #fff;
     letter-spacing: 1px;
