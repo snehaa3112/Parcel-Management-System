@@ -13,7 +13,10 @@ To run this project locally, follow these steps:
    Clone the repository to your local machine using Git. Open a terminal and run:
 
    ```bash
-   git clone https://github.com/snehaa3112/codespaces-blank.git
-   cd codespaces-blank
+   git clone https://github.com/snehaa3112/Parcel-Management-System.git
+2. **Run the Porject**
+   Run the following command in the terminal.
+   ```bash
+   cd Parcel-Management-System
    pip install -r requirements.txt
    python app.py
