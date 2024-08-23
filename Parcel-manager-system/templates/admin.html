@@ -43,6 +43,11 @@
             </div>
         </header>
         <!-- Sidebar Start -->
+        <div class="sidebar-toggle-box">
+            <i class="fa fa-bars"></i>
+        </div>
+        
+        <!-- Sidebar -->
         <aside>
             <div id="sidebar" class="nav-collapse">
                 <div class="leftside-navigation">
@@ -225,7 +230,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <form id="deleteForm" method="post" action="{{ url_for('delete_parcel') }}">
-                                         <!-- Add CSRF token for security -->
+                                        <!-- Add CSRF token for security -->
                                         <input type="hidden" name="parcel_id" id="delete_parcel_id">
                                         <button type="button" class="btn btn-secondary"
                                             data-dismiss="modal">Cancel</button>
@@ -285,39 +290,44 @@
                 });
             });
             $(document).ready(function () {
-        // Handle delete button click
-        $(document).on('click', '.delete-btn', function () {
-            var parcelId = $(this).data('id');
-            $('#delete_parcel_id').val(parcelId);
-            $('#deleteConfirmModal').modal('show');
-        });
+                // Handle delete button click
+                $(document).on('click', '.delete-btn', function () {
+                    var parcelId = $(this).data('id');
+                    $('#delete_parcel_id').val(parcelId);
+                    $('#deleteConfirmModal').modal('show');
+                });
 
-        // Handle form submission for deletion
-        $('#deleteForm').on('submit', function (e) {
-            e.preventDefault(); // Prevent the default form submission
+                // Handle form submission for deletion
+                $('#deleteForm').on('submit', function (e) {
+                    e.preventDefault(); // Prevent the default form submission
 
-            var parcelId = $('#delete_parcel_id').val();
+                    var parcelId = $('#delete_parcel_id').val();
 
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function (response) {
-                    if (response.success) {
-                        $('#deleteConfirmModal').modal('hide');
-                        // Optionally, remove the row from the table
-                        $('button[data-id="' + parcelId + '"]').closest('tr').remove();
-                    } else {
-                        alert('Error deleting the parcel.');
-                    }
-                },
-                error: function () {
-                    alert('An error occurred.');
-                }
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        type: 'POST',
+                        data: $(this).serialize(),
+                        success: function (response) {
+                            if (response.success) {
+                                $('#deleteConfirmModal').modal('hide');
+                                // Optionally, remove the row from the table
+                                $('button[data-id="' + parcelId + '"]').closest('tr').remove();
+                            } else {
+                                alert('Error deleting the parcel.');
+                            }
+                        },
+                        error: function () {
+                            alert('An error occurred.');
+                        }
+                    });
+                });
             });
+            $(document).ready(function () {
+        // Toggle sidebar on button click
+        $('.sidebar-toggle-box').on('click', function () {
+            $('#sidebar').toggleClass('open');
         });
     });
-
         </script>
     </section>
 </body>

@@ -215,21 +215,36 @@ def add_parcel():
 @app.route('/delete_parcel', methods=['POST'])
 @login_required
 def delete_parcel():
-    print("request recived")
+    print("Delete request received")
     parcel_id = request.form.get('parcel_id')
-    if current_user.is_admin != 1:
-        return redirect(url_for('user_dashboard'))
 
-    parcel = Parcel.query.get_or_404(parcel_id)
+    if not parcel_id:
+        return jsonify({'success': False, 'message': 'Parcel ID is required'}), 400
+
+    # Check if the user is admin
+    # if current_user.is_admin != 1:
+    #     return jsonify({'success': False, 'message': 'Unauthorized access'}), 403
+
+    # Fetch the parcel
+    parcel = Parcel.query.get(parcel_id)
+
+    if not parcel:
+        return jsonify({'success': False, 'message': 'Parcel not found'}), 404
+
     try:
         db.session.delete(parcel)
         db.session.commit()
+
+        # Emit the parcel update to the admin namespace
         socketio.emit('parcel_update', {'id': parcel_id, 'action': 'delete'}, namespace='/admin')
-        return jsonify({'success': True})
+        
+        return jsonify({'success': True, 'message': 'Parcel deleted successfully'})
     except Exception as e:
+        # Rollback if there is an error
         db.session.rollback()
         print(f"Error: {e}")
-        return jsonify({'success': False}), 500
+        return jsonify({'success': False, 'message': 'Error deleting parcel', 'error': str(e)}), 500
+
 
 
 @app.route('/logout')

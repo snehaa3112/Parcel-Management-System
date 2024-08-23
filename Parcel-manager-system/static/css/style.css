@@ -30,6 +30,39 @@ h1,h2,h3,h4,h5,h6{
 p{
 	margin:0;
 }
+
+/* Ensure the sidebar is positioned correctly and hidden by default */
+#sidebar {
+    width: 250px; /* Adjust this width according to your sidebar width */
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: #f8f9fa; /* Adjust color as needed */
+    transform: translateX(-250px); /* Hide the sidebar by default */
+    transition: transform 0.3s ease; /* Smooth transition */
+}
+
+/* Class to show the sidebar */
+#sidebar.open {
+    transform: translateX(0); /* Slide in */
+}
+
+/* Style for the toggle button */
+.sidebar-toggle-box {
+    position: absolute;
+    top: 20px; /* Adjust as needed */
+    left: 250px; /* Adjust to align with the sidebar width */
+    background: #8b5c7e;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+    cursor: pointer;
+    color: white;
+}
+
 ul,label{
 	margin:0;
 	padding:0;
